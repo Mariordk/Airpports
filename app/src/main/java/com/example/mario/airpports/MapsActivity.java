@@ -1,5 +1,12 @@
 package com.example.mario.airpports;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -58,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * we just add a circle near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -122,11 +130,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         @Override
         protected void onPostExecute(Boolean result) {
+
             if (result){
                 for(int i=0; i<message.length;i++){
 
                     LatLng punto = new LatLng(latitude[i], longitude[i]);
-                    mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])));
+                    mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avion)));
                 }
             }
         }
