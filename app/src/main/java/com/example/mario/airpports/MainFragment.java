@@ -26,34 +26,22 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.URLConnection;
 
 
 public class MainFragment extends Fragment implements View.OnClickListener, TextWatcher {
 
 
-    private Spinner numero_vuelo;
+    Spinner numero_vuelo;
     private Button enviar;
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
         View view = inflater.inflate(R.layout.fragment_main,container,false);
         numero_vuelo = (Spinner)view.findViewById(R.id.numero_vuelo);
         enviar = (Button)view.findViewById(R.id.enviar);
-        TextView text = (TextView)view.findViewById(R.id.texto);
-        String json ="";
-        /*Aquí habrá que meter los numeros de vuelo disponibles en una List*/
-        /*ArrayAdapter<CharSequence> adapter =
-                ArrayAdapter.createFromResource(this.getActivity(),R.array.valores_array,android.R.layout.simple_spinner_item);
-        numero_vuelo.setAdapter(adapter);*/
-
         Rest rest = new Rest();
         rest.execute();
         enviar.setOnClickListener(this);
-        //("http://localhost:8080/Airpports/webresources/com.mycompany.airpports.entities.vuelos");
-
-
-
 
         return view;
     }
@@ -79,6 +67,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this.getActivity(), MapsActivity.class);
+        intent.putExtra("numero_vuelo", numero_vuelo.getSelectedItem().toString());
         //Iniciamos la nueva actividad
         startActivity(intent);
 
