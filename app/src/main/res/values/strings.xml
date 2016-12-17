@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="select_flight">Seleccione número de vuelo:</string>
     <string name="see_route">Ver ruta</string>
+    <string name="select_date">Seleccione fecha de vuelo:</string>
 </resources>

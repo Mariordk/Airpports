@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Spinner;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,6 +20,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
@@ -43,6 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int[] altitude;
     int[] speed;
     String[] time1 ;
+    int[] source;
     int size;
     boolean result = true;
     @Override
@@ -106,7 +110,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 latitude = new double[respJSON.length()];
                 altitude = new int[respJSON.length()];
                 speed = new int[respJSON.length()];
+                source = new int[respJSON.length()];
                 time1 = new String[respJSON.length()];
+
                 size = respJSON.length();
                 for(int i=0; i<respJSON.length(); i++) {
 
@@ -118,7 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     latitude[i] = obj.getDouble("latitude");
                     altitude[i] = obj.getInt("altitude");
                     speed[i] = obj.getInt("speed");
+                    source[i] = obj.getInt("source");
                     time1[i] = obj.getString("time1");
+
 
                 }
             } catch (Exception e){
@@ -131,12 +139,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Boolean result) {
 
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
             if (result){
                 for(int i=0; i<message.length;i++){
+                    if(time1[i].substring(0,10).equals(getIntent().getExtras().getString("fecha_vuelo"))) {
+                        LatLng punto = new LatLng(latitude[i], longitude[i]);
+                        switch (source[i]){
+                            case 1:
+                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblack)));
+                                break;
 
-                    LatLng punto = new LatLng(latitude[i], longitude[i]);
-                    mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avion)));
+                            case 2:
+                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
+                                break;
+
+                            case 3:
+                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionred)));
+                                break;
+
+                            case 4:
+                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.aviongreen)));
+                                break;
+                        }
+
+                        builder.include(punto);
+
+                    }
+
                 }
+                LatLngBounds bounds = builder.build();
+                int padding = 0; // offset from edges of the map in pixels
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                mMap.moveCamera(cu);
             }
         }
     }
