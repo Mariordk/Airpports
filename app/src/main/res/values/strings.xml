@@ -4,4 +4,11 @@
     <string name="select_flight">Seleccione número de vuelo:</string>
     <string name="see_route">Ver ruta</string>
     <string name="select_date">Seleccione fecha de vuelo:</string>
+    <string name="flight">Vuelo</string>
+    <string name="datehour">Fecha y hora</string>
+    <string name="speed">Velocidad</string>
+    <string name="altitude">Altitud</string>
+    <string name="source">Fuente</string>
+    <string name="longitude">Longitud</string>
+    <string name="latitude">Latitud</string>
 </resources>

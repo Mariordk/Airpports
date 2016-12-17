@@ -1,10 +1,16 @@
 package com.example.mario.airpports;
 
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -14,6 +20,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
@@ -151,19 +158,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         switch (source[i]){
                             //ADSBHUB
                             case 1:
-                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblack)));
+                                mMap.addMarker(new MarkerOptions().
+                                        position(punto)
+                                        .title(getIntent().getExtras().getString("numero_vuelo"))
+                                        .snippet(getString(R.string.longitude) +": " + String.valueOf(longitude[i]) +"   " + getString(R.string.latitude) +": "+ String.valueOf(latitude[i]) + "\n" +
+                                                    getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " + getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
+                                                   getString(R.string.datehour) +": " + time1[i]  + "\n" + getString(R.string.source)+": ADSBHUB")
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblack)));
                                 break;
                             //FRAMBUESA
+
                             case 2:
-                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
+                                mMap.addMarker(new MarkerOptions().position(punto)
+                                        .title(getIntent().getExtras().getString("numero_vuelo"))
+                                        .snippet(getString(R.string.longitude) +": " + String.valueOf(longitude[i]) +"   " + getString(R.string.latitude) +": "+ String.valueOf(latitude[i]) + "\n" +
+                                                getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " + "\n" + getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
+                                                getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source) + ": FRAMBUESA")
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
                                 break;
                             //FLIGHTRADAR24
                             case 3:
-                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionred)));
+                                mMap.addMarker(new MarkerOptions().position(punto)
+                                        .title(getIntent().getExtras().getString("numero_vuelo"))
+                                        .snippet(getString(R.string.longitude) +": " + String.valueOf(longitude[i]) +"   " + getString(R.string.latitude) +": "+ String.valueOf(latitude[i]) + "\n" +
+                                                getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " + getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
+                                                getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source)+": FLIGHTRADAR24")
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionred)));
                                 break;
                             //FLIGHTAWARE
+
                             case 4:
-                                mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.aviongreen)));
+                                mMap.addMarker(new MarkerOptions().position(punto)
+                                        .title(getIntent().getExtras().getString("numero_vuelo"))
+                                        .snippet(getString(R.string.longitude) +": " + String.valueOf(longitude[i]) +"   " + getString(R.string.latitude) +": "+ String.valueOf(latitude[i]) + "\n" +
+                                                getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " + getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
+                                                getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source)+": FLIGHTAWARE")
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.aviongreen)));
                                 break;
                         }
 
@@ -181,6 +211,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                 //Se la asignamos al mapa
                 mMap.moveCamera(cu);
+
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+                    @Override
+                    public View getInfoWindow(Marker arg0) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+
+                        LinearLayout info = new LinearLayout(getApplicationContext());
+                        info.setOrientation(LinearLayout.VERTICAL);
+
+                        TextView title = new TextView(getApplicationContext());
+                        title.setTextColor(Color.BLACK);
+                        title.setGravity(Gravity.CENTER);
+                        title.setTypeface(null, Typeface.BOLD);
+                        title.setText(marker.getTitle());
+
+                        TextView snippet = new TextView(getApplicationContext());
+                        snippet.setTextColor(Color.GRAY);
+                        snippet.setText(marker.getSnippet());
+
+                        info.addView(title);
+                        info.addView(snippet);
+
+                        return info;
+                    }
+                });
             }
         }
     }
