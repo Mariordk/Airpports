@@ -1,12 +1,6 @@
 package com.example.mario.airpports;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
+
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -17,15 +11,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.apache.http.HttpResponse;
-
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -65,7 +56,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -85,25 +75,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected Boolean doInBackground(String... params) {
 
-
-
+            //Variable para saber si se hace la conexion al rest con exito
             boolean result = true;
+
 
             HttpClient httpClient = new DefaultHttpClient();
 
+            //Se coge el numero de vuelo seleccionado en el anterior activity
             String vuelo = params[0];
 
+            //Conexion a la url del rest que coge los datos
             HttpGet del = new HttpGet("http://10.0.2.2:8080/Airpports/webresources/com.mycompany.airpports.entities.mensajes/mensajes?flight="+ vuelo);
 
+            //Con esto se indica que vamos a obtener datos en json
             del.setHeader("content-type", "application/json");
 
             try
             {
+                //Conexion
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
 
+                //Se meten los datos en un Array de tipo json
                 JSONArray respJSON = new JSONArray(respStr);
 
+                //Inicializamos las variables con el tamañod el array anterior
                 message = new int[respJSON.length()];
                 aircraft = new String[respJSON.length()];
                 longitude = new double[respJSON.length()];
@@ -113,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 source = new int[respJSON.length()];
                 time1 = new String[respJSON.length()];
 
-                size = respJSON.length();
+                //Se introducen los datos del array json en los arrays obtenidos anteriormente
                 for(int i=0; i<respJSON.length(); i++) {
 
                     JSONObject obj = respJSON.getJSONObject(i);
@@ -139,38 +135,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Boolean result) {
 
+            //Con esto se establecen los bounds de los marcadores
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+            //Si ha habido exito en la conexion al servicio rest
             if (result){
+
+                //Para cada mensaje
                 for(int i=0; i<message.length;i++){
+                    //Se coge la fecha del anterior activity y se compara con las obtenidas, si coinciden se pinta en el mapa
                     if(time1[i].substring(0,10).equals(getIntent().getExtras().getString("fecha_vuelo"))) {
+
                         LatLng punto = new LatLng(latitude[i], longitude[i]);
+                        //Dependiendo de la fuente de la que se recibe el mensaje, se pinta un avión u otro
                         switch (source[i]){
+                            //ADSBHUB
                             case 1:
                                 mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblack)));
                                 break;
-
+                            //FRAMBUESA
                             case 2:
                                 mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
                                 break;
-
+                            //FLIGHTRADAR24
                             case 3:
                                 mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.avionred)));
                                 break;
-
+                            //FLIGHTAWARE
                             case 4:
                                 mMap.addMarker(new MarkerOptions().position(punto).title(String.valueOf(message[i])).icon(BitmapDescriptorFactory.fromResource(R.drawable.aviongreen)));
                                 break;
                         }
 
+                        //Se incluyen los puntos de latitud y longitud para establecer los limites para mover la camara
                         builder.include(punto);
 
                     }
 
                 }
+                //Establecemos el LatLngBounds para la camara
                 LatLngBounds bounds = builder.build();
-                int padding = 0; // offset from edges of the map in pixels
+                //Padding de los puntos en el mapa
+                int padding = 50;
+                //Inicializamos la camara con los dos parametros anteriores
                 CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                //Se la asignamos al mapa
                 mMap.moveCamera(cu);
             }
         }

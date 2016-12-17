@@ -98,6 +98,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this.getActivity(), MapsActivity.class);
+        //Estos son los parametros que se pasan al activity del maps para poder usarlos alli
+        //Vuelo seleccionado y fecha seleccionada
         intent.putExtra("numero_vuelo", numero_vuelo.getSelectedItem().toString());
         intent.putExtra("fecha_vuelo", fecha_vuelo.getSelectedItem().toString());
         //Iniciamos la nueva actividad
@@ -157,18 +159,22 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
 
     public class RestFecha extends AsyncTask<String, Integer, Boolean> {
 
-
+        //Array donde se van a meter todas las fechas
         String[] fechas;
         @Override
         protected Boolean doInBackground(String... params) {
+            //Para devolver el resultado de la conexion
             boolean result = true;
 
             HttpClient httpClient = new DefaultHttpClient();
 
+            //Se coge el vuelo seleccionado
             String vuelo = params[0];
 
+            //Se obtienen los datos de ese vuelo por el numero de vuelo
             HttpGet del = new HttpGet("http://10.0.2.2:8080/Airpports/webresources/com.mycompany.airpports.entities.mensajes/mensajes?flight="+ vuelo);
 
+            //Establecemos el tipo de datos que queremos en el header de la peticion
             del.setHeader("content-type", "application/json");
 
             try{
@@ -176,6 +182,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
 
+                //Se meten los datos en un JSONArray
                 JSONArray respJSON = new JSONArray(respStr);
 
                fechas = new String[respJSON.length()];
@@ -184,9 +191,8 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
 
                     JSONObject obj = respJSON.getJSONObject(i);
 
-                    String fecha = obj.getString("time1");
-
-                    fechas[i] = fecha;
+                    //Se mete la fecha en la posicion i del array fechas
+                    fechas[i] = obj.getString("time1");
 
                 }
             }  catch (Exception e) {
@@ -201,20 +207,28 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         @Override
         protected void onPostExecute(Boolean result) {
 
+            //Para quitar las fechas repetidas se va a utilizar una variable de tipo set
+            //Ademas se inicializa como de tipo LinkedHashSet para conservar el orden
             Set<String> setdates = new LinkedHashSet<>();
 
+            //Ya que la fecha tiene el formato con la hora, en este caso se quita la hora quedandonos con la fecha que es lo que
+            //se va a mostrar y lo que interesa
             for(int i = 0; i<fechas.length;i++){
+                    //Se pasan las fechas del array de fechas al set
                     setdates.add(fechas[i].substring(0,10));
             }
 
+            //Se pasan las fechas del set a un arraylist para pasarlo al spinner
             List<String> fechas_dates = new ArrayList<String>();
             fechas_dates.clear();
             fechas_dates.addAll(setdates);
 
             if (result)
             {
+                //Se incluyen las fechas en un adaptador
                 ArrayAdapter<String> adaptador_fechas = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,fechas_dates);
 
+                //Se incluyen al spinner para poder ser seleccionadas
                 fecha_vuelo.setAdapter(adaptador_fechas);
             }
         }
