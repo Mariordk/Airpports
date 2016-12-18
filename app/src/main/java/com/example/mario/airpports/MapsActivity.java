@@ -172,7 +172,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 mMap.addMarker(new MarkerOptions().position(punto)
                                         .title(getIntent().getExtras().getString("numero_vuelo"))
                                         .snippet(getString(R.string.longitude) +": " + String.valueOf(longitude[i]) +"   " + getString(R.string.latitude) +": "+ String.valueOf(latitude[i]) + "\n" +
-                                                getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " + "\n" + getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
+                                                getString(R.string.altitude) +": " + String.valueOf(altitude[i])+" m   " +  getString(R.string.speed) + ": " + String.valueOf(speed[i]) +" km/h \n" +
                                                 getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source) + ": FRAMBUESA")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
                                 break;

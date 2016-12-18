@@ -11,4 +11,5 @@
     <string name="source">Source</string>
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
+    <string name="seen_routes">Last seen routes</string>
 </resources>

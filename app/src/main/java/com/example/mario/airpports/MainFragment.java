@@ -2,6 +2,7 @@ package com.example.mario.airpports;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,9 +51,23 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         enviar = (Button)view.findViewById(R.id.enviar);
         text_fecha = (TextView)view.findViewById(R.id.select_fecha);
         fecha_vuelo = (Spinner)view.findViewById(R.id.fecha_vuelo);
-        text_fecha.setVisibility(View.GONE);
-        fecha_vuelo.setVisibility(View.GONE);
-        enviar.setVisibility(View.GONE);
+        Resources res = getResources();
+
+        TabHost tabs=(TabHost)view.findViewById(android.R.id.tabhost);
+        tabs.setup();
+
+        TabHost.TabSpec spec = tabs.newTabSpec(getString(R.string.see_route));
+        spec.setContent(R.id.tab1);
+        spec.setIndicator(getString(R.string.see_route));
+        tabs.addTab(spec);
+
+        spec=tabs.newTabSpec(getString(R.string.seen_routes));
+        spec.setContent(R.id.tab2);
+        spec.setIndicator(getString(R.string.seen_routes));
+        tabs.addTab(spec);
+
+        tabs.setCurrentTab(0);
+
 
         RestNumeroVuelo restNumeroVuelo = new RestNumeroVuelo();
         restNumeroVuelo.execute();

@@ -2,7 +2,7 @@
     <string name="app_name">Airpports</string>
     <string name="title_activity_maps">Map</string>
     <string name="select_flight">Seleccione número de vuelo:</string>
-    <string name="see_route">Ver ruta</string>
+    <string name="see_route">Consultar ruta</string>
     <string name="select_date">Seleccione fecha de vuelo:</string>
     <string name="flight">Vuelo</string>
     <string name="datehour">Fecha y hora</string>
@@ -11,4 +11,5 @@
     <string name="source">Fuente</string>
     <string name="longitude">Longitud</string>
     <string name="latitude">Latitud</string>
+    <string name="seen_routes">Últimas rutas consultadas</string>
 </resources>
