@@ -20,7 +20,7 @@ public class DbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = String.format("create table %s (%s int primary key, %s text, %s text, %s int, %s int, %s int)",
+        String sql = String.format("create table %s (%s INTEGER PRIMARY KEY AUTOINCREMENT, %s text, %s text, %s int, %s int, %s int)",
                 FlightContract.TABLE,
                 FlightContract.Column.ID,
                 FlightContract.Column.NUMERO_VUELO,

@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -270,6 +271,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 //Se pone la velocidad maxima en el registro
                 nuevoVuelo.put(FlightContract.Column.VELOCIDAD_MAXIMA, velocidad_maxima);
+
+//                Uri uri = getContentResolver().insert(FlightContract.CONTENT_URI, nuevoVuelo);
+
 
                 //Se inserta en la base de datos
                 db.insert(FlightContract.TABLE, null, nuevoVuelo);

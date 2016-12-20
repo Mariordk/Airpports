@@ -46,6 +46,12 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
+
+        <provider
+            android:name="com.example.mario.airpports.FlightProvider"
+            android:authorities="com.example.mario.airpports.FlightProvider"
+            android:exported="false" />
     </application>
+
 
 </manifest>

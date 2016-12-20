@@ -14,8 +14,6 @@ public class FlightContract {
 
     public static final String DEFAULT_SORT = Column.FECHA_CONSULTA + " DESC";
 
-    // Constantes del content provider
-    // content://com.marakana.android.yamba.StatusProvider/status
     public static final String AUTHORITY = "com.example.mario.airpports.FlightProvider";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE);
     public static final int STATUS_ITEM = 1;

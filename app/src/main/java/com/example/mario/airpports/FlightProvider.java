@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -36,14 +37,47 @@ public class FlightProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-        return null;
+    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        String where;
+        switch (sURIMatcher.match(uri)) {
+            case FlightContract.STATUS_DIR:
+                where = selection;
+                break;
+            case FlightContract.STATUS_ITEM:
+                long id = ContentUris.parseId(uri);
+                where = FlightContract.Column.ID
+                        + "="
+                        + id
+                        + (TextUtils.isEmpty(selection) ? "" : " and ( " + selection + " )");
+                break;
+            default:
+                throw new IllegalArgumentException("uri incorrecta: " + uri);
+        }
+        String orderBy = (TextUtils.isEmpty(sortOrder))
+                ? FlightContract.DEFAULT_SORT
+                : sortOrder;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(FlightContract.TABLE, projection, where, selectionArgs, null, null, orderBy);
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        Log.d(TAG, "registros recuperados: " + cursor.getCount());
+        return cursor;
+
     }
 
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        switch (sURIMatcher.match(uri)) {
+            case FlightContract.STATUS_DIR:
+                Log.d(TAG, "gotType: vnd.android.cursor.dir/vnd.com.example.mario.airpports.provider.flight");
+                return "vnd.android.cursor.dir/vnd.com.example.mario.airpports.provider.flight";
+            case FlightContract.STATUS_ITEM:
+                Log.d(TAG, "gotType: vnd.android.cursor.item/vnd.com.example.mario.airpports.provider.flight");
+                return "vnd.android.cursor.item/vnd.com.example.mario.airpports.provider.flight";
+            default:
+                throw new IllegalArgumentException("uri incorrecta: " + uri);
+        }
+
     }
 
     @Nullable
@@ -55,8 +89,8 @@ public class FlightProvider extends ContentProvider {
             throw new IllegalArgumentException("uri incorrecta: " + uri);
         }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long rowId = db.insertWithOnConflict(FlightContract.TABLE, null,
-                contentValues, SQLiteDatabase.CONFLICT_IGNORE);
+        long rowId = db.insert(FlightContract.TABLE, null,
+                contentValues);
         // Se inserto correctamente?
         if (rowId != -1) {
             long id = contentValues.getAsLong(FlightContract.Column.ID);
@@ -69,12 +103,56 @@ public class FlightProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
+        String where;
+        switch (sURIMatcher.match(uri)) {
+            case FlightContract.STATUS_DIR:
+                where = selection;
+                break;
+            case FlightContract.STATUS_ITEM:
+                long id = ContentUris.parseId(uri);
+                where = FlightContract.Column.ID
+                        + "="
+                        + id
+                        + (TextUtils.isEmpty(selection) ? "" : " and ( " + selection + " )");
+                break;
+            default:
+                throw new IllegalArgumentException("uri incorrecta: " + uri);
+        }
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int ret = db.delete(FlightContract.TABLE, where, selectionArgs);
+        if (ret > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        Log.d(TAG, "registros borrados: " + ret);
+        return ret;
+
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        String where;
+        switch (sURIMatcher.match(uri)) {
+            case FlightContract.STATUS_DIR:
+                where = selection;
+                break;
+            case FlightContract.STATUS_ITEM:
+                long id = ContentUris.parseId(uri);
+                where = FlightContract.Column.ID
+                        + "="
+                        + id
+                        + (TextUtils.isEmpty(selection) ? "" : " and ( " + selection + " )");
+                break;
+            default:
+                throw new IllegalArgumentException("uri incorrecta: " + uri);
+        }
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        int ret = db.update(FlightContract.TABLE, values, where, selectionArgs);
+        if (ret > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        Log.d(TAG, "registros actualizados: " + ret);
+        return ret;
+
     }
 }
