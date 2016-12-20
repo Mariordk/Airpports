@@ -1,6 +1,8 @@
 package com.example.mario.airpports;
 
 
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -32,8 +34,17 @@ import org.json.JSONArray;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    DbHelper dbHelper;
+    SQLiteDatabase db;
+
 
     private GoogleMap mMap;
     Spinner numero_vuelo;
@@ -60,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-
+        dbHelper = new DbHelper(this);
     }
 
     /**
@@ -132,6 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 }
+
             } catch (Exception e){
                 result = false;
                 e.printStackTrace();
@@ -144,7 +156,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             //Con esto se establecen los bounds de los marcadores
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
+            //ArrayList para almacenar las alturas y velocidades del vuelo seleccionado para calcular las máximas y luego realizar
+            //las gráficas pertinentes
+            List<Integer> alturas = new ArrayList<Integer>();
+            List<Integer> velocidades = new ArrayList<Integer>();
+            //Variable para almacenar las alturas del vuelo y recorrer el array
+            int altura=0;
             //Si ha habido exito en la conexion al servicio rest
             if (result){
 
@@ -153,9 +170,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //Se coge la fecha del anterior activity y se compara con las obtenidas, si coinciden se pinta en el mapa
                     if(time1[i].substring(0,10).equals(getIntent().getExtras().getString("fecha_vuelo"))) {
 
+
                         LatLng punto = new LatLng(latitude[i], longitude[i]);
                         //Dependiendo de la fuente de la que se recibe el mensaje, se pinta un avión u otro
                         switch (source[i]){
+
                             //ADSBHUB
                             case 1:
                                 mMap.addMarker(new MarkerOptions().
@@ -166,8 +185,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                    getString(R.string.datehour) +": " + time1[i]  + "\n" + getString(R.string.source)+": ADSBHUB")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblack)));
                                 break;
-                            //FRAMBUESA
 
+                            //FRAMBUESA
                             case 2:
                                 mMap.addMarker(new MarkerOptions().position(punto)
                                         .title(getIntent().getExtras().getString("numero_vuelo"))
@@ -176,6 +195,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source) + ": FRAMBUESA")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionblue)));
                                 break;
+
                             //FLIGHTRADAR24
                             case 3:
                                 mMap.addMarker(new MarkerOptions().position(punto)
@@ -185,8 +205,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                 getString(R.string.datehour) +": " + time1[i] + "\n" + getString(R.string.source)+": FLIGHTRADAR24")
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.avionred)));
                                 break;
-                            //FLIGHTAWARE
 
+                            //FLIGHTAWARE
                             case 4:
                                 mMap.addMarker(new MarkerOptions().position(punto)
                                         .title(getIntent().getExtras().getString("numero_vuelo"))
@@ -200,9 +220,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         //Se incluyen los puntos de latitud y longitud para establecer los limites para mover la camara
                         builder.include(punto);
 
+                        alturas.add(altitude[i]);
+                        velocidades.add(speed[i]);
+                        altura++;
+
+
                     }
 
+
                 }
+                //Abrimos la base de datos para escribir
+                db = dbHelper.getWritableDatabase();
+                //Se crea el registro en un objeto de tipo ContentValues
+                ContentValues nuevoVuelo = new ContentValues();
+                //Ponemos en el registro el numero de vuelo
+                nuevoVuelo.put(FlightContract.Column.NUMERO_VUELO,getIntent().getExtras().getString("numero_vuelo"));
+                //Ponemos en el registro la fecha de vuelo
+                nuevoVuelo.put(FlightContract.Column.FECHA_VUELO,getIntent().getExtras().getString("fecha_vuelo"));
+
+                //Se obtiene la fecha actual formateada
+                /*Calendar c = Calendar.getInstance();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String fecha = df.format(c.getTime());
+                //Se pone en el registro la fecha de consulta del vuelo*/
+
+                long fecha_consulta = System.currentTimeMillis();
+                nuevoVuelo.put(FlightContract.Column.FECHA_CONSULTA, fecha_consulta);
+
+
+
+                int altura_maxima = 0;
+                //Se obtiene la altura máxima alcanzada
+                for (int j=0;j<alturas.size();j++){
+                    if (alturas.get(j)>altura_maxima){
+                        altura_maxima = alturas.get(j);
+                    }
+                }
+
+                //Se pone la altura maxima en el registro
+                nuevoVuelo.put(FlightContract.Column.ALTURA_MAXIMA, altura_maxima);
+
+                int velocidad_maxima = 0;
+                //Se obtiene la velocidad máxima alcanzada
+                for (int j=0;j<velocidades.size();j++){
+                    if (velocidades.get(j)>velocidad_maxima){
+                        velocidad_maxima = velocidades.get(j);
+                    }
+                }
+
+                //Se pone la velocidad maxima en el registro
+                nuevoVuelo.put(FlightContract.Column.VELOCIDAD_MAXIMA, velocidad_maxima);
+
+                //Se inserta en la base de datos
+                db.insert(FlightContract.TABLE, null, nuevoVuelo);
+                //Se cierra la base de datos
+                db.close();
+
+
                 //Establecemos el LatLngBounds para la camara
                 LatLngBounds bounds = builder.build();
                 //Padding de los puntos en el mapa

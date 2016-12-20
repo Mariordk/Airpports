@@ -3,6 +3,7 @@ package com.example.mario.airpports;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,8 @@ import java.util.Set;
 
 public class MainFragment extends Fragment implements View.OnClickListener, TextWatcher {
 
+    DbHelper dbHelper;
+    SQLiteDatabase db;
 
     Spinner numero_vuelo;
     Spinner fecha_vuelo;
@@ -118,8 +121,12 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         //Vuelo seleccionado y fecha seleccionada
         intent.putExtra("numero_vuelo", numero_vuelo.getSelectedItem().toString());
         intent.putExtra("fecha_vuelo", fecha_vuelo.getSelectedItem().toString());
+
+
+
         //Iniciamos la nueva actividad
         startActivity(intent);
+
     }
 
     public class RestNumeroVuelo extends AsyncTask<String, Integer, Boolean> {
