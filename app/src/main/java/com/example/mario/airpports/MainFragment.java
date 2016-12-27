@@ -58,22 +58,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         enviar = (Button)view.findViewById(R.id.enviar);
         text_fecha = (TextView)view.findViewById(R.id.select_fecha);
         fecha_vuelo = (Spinner)view.findViewById(R.id.fecha_vuelo);
-        /*Resources res = getResources();
 
-        TabHost tabs=(TabHost)view.findViewById(android.R.id.tabhost);
-        tabs.setup();
-
-        TabHost.TabSpec spec = tabs.newTabSpec(getString(R.string.see_route));
-        spec.setContent(R.id.tab1);
-        spec.setIndicator(getString(R.string.see_route));
-        tabs.addTab(spec);
-
-        spec=tabs.newTabSpec(getString(R.string.seen_routes));
-        spec.setContent(R.id.tab2);
-        spec.setIndicator(getString(R.string.seen_routes));
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);*/
 
         RestNumeroVuelo restNumeroVuelo = new RestNumeroVuelo();
         restNumeroVuelo.execute();
@@ -81,9 +66,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         numero_vuelo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                text_fecha.setVisibility(View.VISIBLE);
-                fecha_vuelo.setVisibility(View.VISIBLE);
-                enviar.setVisibility(View.VISIBLE);
+
                 RestFecha restFecha = new RestFecha();
                 restFecha.execute(numero_vuelo.getSelectedItem().toString());
             }

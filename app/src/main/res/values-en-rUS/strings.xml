@@ -2,7 +2,7 @@
     <string name="app_name">Airpports</string>
     <string name="title_activity_maps">Map</string>
     <string name="select_flight">Select flight number:</string>
-    <string name="see_route">See route</string>
+    <string name="see_route">"See route  "</string>
     <string name="select_date">Select flight date:</string>
     <string name="flight">Flight</string>
     <string name="datehour">Date and hour</string>

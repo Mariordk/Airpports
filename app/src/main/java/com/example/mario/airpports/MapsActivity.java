@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,6 +52,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     Spinner numero_vuelo;
     Button tipoMapa;
+
+    CheckBox adsbhub;
+    CheckBox frambuesa;
+    CheckBox flightradar24;
+    CheckBox flightaware;
+
     int[] message;
     String[] aircraft;
     double[] longitude;
@@ -67,6 +74,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
         tipoMapa = (Button) findViewById(R.id.tipoMapa);
+        frambuesa = (CheckBox) findViewById(R.id.frambuesa);
+        adsbhub = (CheckBox) findViewById(R.id.adsbhub);
+        flightradar24 = (CheckBox) findViewById(R.id.flightradar24);
+        flightaware = (CheckBox) findViewById(R.id.flightaware);
+
         Rest rest = new Rest();
         rest.execute(getIntent().getExtras().getString("numero_vuelo"));
 
@@ -90,6 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
     }
 
     /**
@@ -105,6 +118,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
+
 
     public class Rest extends AsyncTask<String, Integer, Boolean>{
 
@@ -174,6 +188,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             //Con esto se establecen los bounds de los marcadores
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+            List<Marker> marcadores = new ArrayList<Marker>();
             //ArrayList para almacenar las alturas y velocidades del vuelo seleccionado para calcular las máximas y luego realizar
             //las gráficas pertinentes
             List<Integer> alturas = new ArrayList<Integer>();

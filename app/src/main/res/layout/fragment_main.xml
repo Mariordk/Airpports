@@ -48,7 +48,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/see_route"
                         android:layout_gravity="center"
-                        android:id="@+id/enviar"/>
+                        android:id="@+id/enviar"
+                        android:drawableRight="@drawable/avionwhite"/>
 
                 </LinearLayout>
 
