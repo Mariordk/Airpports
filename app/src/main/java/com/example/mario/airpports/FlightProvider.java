@@ -89,13 +89,13 @@ public class FlightProvider extends ContentProvider {
             throw new IllegalArgumentException("uri incorrecta: " + uri);
         }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        long rowId = db.insert(FlightContract.TABLE, null,
-                contentValues);
+        long rowId = db.insert(FlightContract.TABLE, null, contentValues);
+
         // Se inserto correctamente?
         if (rowId != -1) {
-            long id = contentValues.getAsLong(FlightContract.Column.ID);
-            ret = ContentUris.withAppendedId(uri, id);
-            Log.d(TAG, "uri insertada: " + ret);
+            String vuelo = contentValues.getAsString(FlightContract.Column.NUMERO_VUELO);
+            ret = ContentUris.withAppendedId(uri, 0);
+            Log.d(TAG, "uri insertada: " + ret + vuelo);
             // Notificar que los datos para la URI han cambiado
             getContext().getContentResolver().notifyChange(uri, null);
         }

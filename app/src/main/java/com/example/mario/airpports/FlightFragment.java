@@ -22,10 +22,8 @@ public class FlightFragment extends ListFragment implements LoaderManager.Loader
 
     private SimpleCursorAdapter mAdapter;
 
-    private static final String[] FROM = {FlightContract.Column.NUMERO_VUELO,
-            FlightContract.Column.FECHA_VUELO, FlightContract.Column.FECHA_CONSULTA};
-    private static final int[] TO = {R.id.list_item_numero_vuelo,
-            R.id.list_item_fecha_vuelo, R.id.list_item_fecha_consulta};
+    private static final String[] FROM = {FlightContract.Column.NUMERO_VUELO, FlightContract.Column.FECHA_VUELO, FlightContract.Column.FECHA_CONSULTA,FlightContract.Column.VELOCIDAD_MAXIMA,FlightContract.Column.ALTURA_MAXIMA};
+    private static final int[] TO = {R.id.list_item_numero_vuelo, R.id.list_item_fecha_vuelo, R.id.list_item_fecha_consulta,R.id.list_item_velocidad_maxima,R.id.list_item_altitud_maxima};
 
     private static final int LOADER_ID = 42;
 
@@ -43,8 +41,7 @@ public class FlightFragment extends ListFragment implements LoaderManager.Loader
         if (id != LOADER_ID)
             return null;
         Log.d(TAG, "onCreateLoader");
-        return new CursorLoader(getActivity(), FlightContract.CONTENT_URI, null,
-                null, null, FlightContract.DEFAULT_SORT);
+        return new CursorLoader(getActivity(), FlightContract.CONTENT_URI, null, null, null, FlightContract.DEFAULT_SORT);
     }
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
@@ -57,11 +54,10 @@ public class FlightFragment extends ListFragment implements LoaderManager.Loader
     }
 
 
-    /** Inner class. */
+
     class TimelineViewBinder implements SimpleCursorAdapter.ViewBinder {
         @Override
-        public boolean setViewValue(View view, Cursor cursor, int
-                columnIndex) {
+        public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
             if (view.getId() != R.id.list_item_fecha_consulta)
                 return false;
             // Convertimos timestamp a tiempo relativo

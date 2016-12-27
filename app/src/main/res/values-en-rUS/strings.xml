@@ -12,4 +12,7 @@
     <string name="longitude">Longitude</string>
     <string name="latitude">Latitude</string>
     <string name="seen_routes">Last seen routes</string>
+    <string name="mapType">Change type</string>
+    <string name="max_speed">"Max speed: "</string>
+    <string name="max_altitude">"Max altitude: "</string>
 </resources>

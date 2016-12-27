@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     Spinner numero_vuelo;
+    Button tipoMapa;
     int[] message;
     String[] aircraft;
     double[] longitude;
@@ -64,6 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
+        tipoMapa = (Button) findViewById(R.id.tipoMapa);
         Rest rest = new Rest();
         rest.execute(getIntent().getExtras().getString("numero_vuelo"));
 
@@ -73,6 +76,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         dbHelper = new DbHelper(this);
+
+        tipoMapa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+                }else if(mMap.getMapType() == GoogleMap.MAP_TYPE_SATELLITE){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                }else if(mMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID) {
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                }
+            }
+        });
     }
 
     /**
@@ -239,11 +256,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Ponemos en el registro la fecha de vuelo
                 nuevoVuelo.put(FlightContract.Column.FECHA_VUELO,getIntent().getExtras().getString("fecha_vuelo"));
 
-                //Se obtiene la fecha actual formateada
-                /*Calendar c = Calendar.getInstance();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String fecha = df.format(c.getTime());
-                //Se pone en el registro la fecha de consulta del vuelo*/
 
                 long fecha_consulta = System.currentTimeMillis();
                 nuevoVuelo.put(FlightContract.Column.FECHA_CONSULTA, fecha_consulta);
@@ -272,14 +284,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se pone la velocidad maxima en el registro
                 nuevoVuelo.put(FlightContract.Column.VELOCIDAD_MAXIMA, velocidad_maxima);
 
-//                Uri uri = getContentResolver().insert(FlightContract.CONTENT_URI, nuevoVuelo);
+             Uri uri = getContentResolver().insert(FlightContract.CONTENT_URI, nuevoVuelo);
 
-
+/*
                 //Se inserta en la base de datos
                 db.insert(FlightContract.TABLE, null, nuevoVuelo);
                 //Se cierra la base de datos
                 db.close();
-
+*/
 
                 //Establecemos el LatLngBounds para la camara
                 LatLngBounds bounds = builder.build();

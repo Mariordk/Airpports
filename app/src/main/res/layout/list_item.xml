@@ -14,9 +14,11 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="Usuario"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/background_light" />
+    />
     <TextView
-        android:id="@+id/list_item_fecha_vuelo"
+        android:id="@+id/list_item_fecha_consulta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/list_item_numero_vuelo"
@@ -24,13 +26,77 @@
         android:layout_alignParentRight="true"
         android:text="Hace 10 minutos"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/secondary_text_light" />
+        android:textColor="@android:color/darker_gray" />
     <TextView
-        android:id="@+id/list_item_fecha_consulta"
+        android:id="@+id/list_item_fecha_vuelo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/list_item_fecha_vuelo"
+        android:layout_below="@+id/list_item_numero_vuelo"
         android:text="Tweet."
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/max_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_item_fecha_vuelo"
+        android:layout_alignParentLeft="true"
+        android:text="@string/max_speed"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"        />
+
+    <TextView
+        android:id="@+id/list_item_velocidad_maxima"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_item_fecha_vuelo"
+        android:layout_toRightOf="@+id/max_speed"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"
+        android:text="max_speed"/>
+
+    <TextView
+        android:id="@+id/kmh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_item_fecha_vuelo"
+        android:layout_toRightOf="@+id/list_item_velocidad_maxima"
+        android:text=" km/h"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"/>
+
+    <TextView
+        android:id="@+id/max_altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/max_speed"
+        android:layout_alignParentLeft="true"
+        android:text="@string/max_altitude"
+        android:textStyle="bold"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"        />
+
+    <TextView
+        android:id="@+id/list_item_altitud_maxima"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/max_speed"
+        android:layout_toRightOf="@+id/max_altitude"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"
+        android:text="max_speed"/>
+
+    <TextView
+        android:id="@+id/metros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/max_speed"
+        android:layout_toRightOf="@+id/list_item_altitud_maxima"
+        android:text=" m"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/darker_gray"/>
+
 </RelativeLayout>
