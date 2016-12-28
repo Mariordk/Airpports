@@ -15,4 +15,9 @@
     <string name="mapType">Cambiar estilo</string>
     <string name="max_speed">"Velocidad máxima: "</string>
     <string name="max_altitude">"Altitud máxima: "</string>
+    <string name="number_deleted_flights">"Vuelos eliminados: "</string>
+    <string name="delete_flights">Eliminar rutas consultadas</string>
+    <string name="confirm_delete">¿Estás seguro de que quieres eliminar los vuelos consultados?</string>
+    <string name="yes">Sí</string>
+    <string name="No">No</string>
 </resources>

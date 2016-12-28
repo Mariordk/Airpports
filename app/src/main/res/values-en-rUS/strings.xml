@@ -15,4 +15,8 @@
     <string name="mapType">Change type</string>
     <string name="max_speed">"Max speed: "</string>
     <string name="max_altitude">"Max altitude: "</string>
+    <string name="number_deleted_flights">"Deleted flights: "</string>
+    <string name="delete_flights">Delete seen routes</string>
+    <string name="confirm_delete">Are you sure you want to delete seen flights?</string>
+    <string name="No">No</string>
 </resources>
