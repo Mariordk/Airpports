@@ -43,30 +43,32 @@ import java.util.Set;
 
 public class MainFragment extends Fragment implements View.OnClickListener, TextWatcher {
 
-    DbHelper dbHelper;
-    SQLiteDatabase db;
-
     Spinner numero_vuelo;
     Spinner fecha_vuelo;
     private Button enviar;
-    private TextView text_fecha;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
+        //Se infla el layout del fragment
         View view = inflater.inflate(R.layout.fragment_main,container,false);
+        //Se obtienen los diferentes elementos del layout que se van a utilizar
         numero_vuelo = (Spinner)view.findViewById(R.id.numero_vuelo);
         enviar = (Button)view.findViewById(R.id.enviar);
-        text_fecha = (TextView)view.findViewById(R.id.select_fecha);
         fecha_vuelo = (Spinner)view.findViewById(R.id.fecha_vuelo);
 
-
+        //Se obtienen todos los vuelos del servicio rest
         RestNumeroVuelo restNumeroVuelo = new RestNumeroVuelo();
         restNumeroVuelo.execute();
+
+        //Se establece la funcionalidad del boton enviar (establecido después)
         enviar.setOnClickListener(this);
+
+        //Lo que ocurre cuando se selecciona un vuelo del spinner
         numero_vuelo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                //Una vez seleccionado uno se obtienen las fechas disponibles de ese vuelo seleccionado
                 RestFecha restFecha = new RestFecha();
                 restFecha.execute(numero_vuelo.getSelectedItem().toString());
             }
@@ -77,8 +79,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
             }
         });
 
-
-
         return view;
     }
 
@@ -87,19 +87,17 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
 
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
     }
 
     @Override
     public void afterTextChanged(Editable editable) {
-
     }
 
+    //Método para cuando se hace click en el botón de consultar ruta
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this.getActivity(), MapsActivity.class);
@@ -107,9 +105,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         //Vuelo seleccionado y fecha seleccionada
         intent.putExtra("numero_vuelo", numero_vuelo.getSelectedItem().toString());
         intent.putExtra("fecha_vuelo", fecha_vuelo.getSelectedItem().toString());
-
-
-
         //Iniciamos la nueva actividad
         startActivity(intent);
 
@@ -117,33 +112,40 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
 
     public class RestNumeroVuelo extends AsyncTask<String, Integer, Boolean> {
 
-
+        //Array en el que se introducen todos los vuelos disponibles
         String[] vuelos;
+
+
         @Override
         protected Boolean doInBackground(String... strUrl) {
             boolean result = true;
 
+            //Se establece la conexión con el servicio rest
             HttpClient httpClient = new DefaultHttpClient();
             HttpGet del =  new HttpGet("http://10.0.2.2:8080/Airpports/webresources/com.mycompany.airpports.entities.vuelos");
             del.setHeader("content-type", "application/json");
 
             try{
 
+                //Se realiza la petición de los datos
                 HttpResponse resp = httpClient.execute(del);
                 String respStr = EntityUtils.toString(resp.getEntity());
 
+                //Se crea un JSONArray (array de objetos JSON)
                 JSONArray respJSON = new JSONArray(respStr);
 
+                //Se inicializa el array en el que se van a meter los vuelos
                 vuelos = new String[respJSON.length()];
                 Log.d("ServicioRest","Exito!");
+
+
+                //Se recorre el array anterior obteniendo cada objeto json
                 for(int i=0; i<respJSON.length(); i++) {
-
                     JSONObject obj = respJSON.getJSONObject(i);
-
+                    //Donde el json tenga como nombre flight, se coge ese valor
                     String vuelo = obj.getString("flight");
-
+                    //Se introduce en el array inicial del metodo el vuelo que está en el objeto json
                     vuelos[i] = vuelo;
-
                 }
             }  catch (Exception e) {
                 Log.e("ServicioRest","Error!", e);
@@ -156,10 +158,13 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
 
         @Override
         protected void onPostExecute(Boolean result) {
+            //Si la conexión ha sido realizada con éxito
             if (result)
             {
+                //Se crea un adapter para incluirlo al spinner de los vuelos
                 ArrayAdapter<String> adaptador = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, vuelos);
 
+                //Se incluyen los vuelos al spinner
                 numero_vuelo.setAdapter(adaptador);
             }
         }

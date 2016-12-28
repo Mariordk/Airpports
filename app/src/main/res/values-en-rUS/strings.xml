@@ -19,4 +19,5 @@
     <string name="delete_flights">Delete seen routes</string>
     <string name="confirm_delete">Are you sure you want to delete seen flights?</string>
     <string name="No">No</string>
+    <string name="yes">Yes</string>
 </resources>

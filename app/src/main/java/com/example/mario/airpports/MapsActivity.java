@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,9 +36,7 @@ import org.json.JSONArray;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 
@@ -48,15 +45,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     DbHelper dbHelper;
     SQLiteDatabase db;
 
-
     private GoogleMap mMap;
     Spinner numero_vuelo;
     Button tipoMapa;
-
-    CheckBox adsbhub;
-    CheckBox frambuesa;
-    CheckBox flightradar24;
-    CheckBox flightaware;
 
     int[] message;
     String[] aircraft;
@@ -74,17 +65,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
         tipoMapa = (Button) findViewById(R.id.tipoMapa);
-        frambuesa = (CheckBox) findViewById(R.id.frambuesa);
-        adsbhub = (CheckBox) findViewById(R.id.adsbhub);
-        flightradar24 = (CheckBox) findViewById(R.id.flightradar24);
-        flightaware = (CheckBox) findViewById(R.id.flightaware);
+
 
         Rest rest = new Rest();
         rest.execute(getIntent().getExtras().getString("numero_vuelo"));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         dbHelper = new DbHelper(this);
@@ -94,8 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
 
                 if(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL){
-                    mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                }else if(mMap.getMapType() == GoogleMap.MAP_TYPE_SATELLITE){
                     mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 }else if(mMap.getMapType() == GoogleMap.MAP_TYPE_HYBRID) {
                     mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -149,7 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se meten los datos en un Array de tipo json
                 JSONArray respJSON = new JSONArray(respStr);
 
-                //Inicializamos las variables con el tamañod el array anterior
+                //Inicializamos las variables con el tamaño del array anterior
                 message = new int[respJSON.length()];
                 aircraft = new String[respJSON.length()];
                 longitude = new double[respJSON.length()];
@@ -258,11 +243,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         velocidades.add(speed[i]);
                         altura++;
 
-
                     }
 
 
                 }
+
                 //Abrimos la base de datos para escribir
                 db = dbHelper.getWritableDatabase();
                 //Se crea el registro en un objeto de tipo ContentValues
@@ -272,11 +257,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Ponemos en el registro la fecha de vuelo
                 nuevoVuelo.put(FlightContract.Column.FECHA_VUELO,getIntent().getExtras().getString("fecha_vuelo"));
 
-
                 long fecha_consulta = System.currentTimeMillis();
                 nuevoVuelo.put(FlightContract.Column.FECHA_CONSULTA, fecha_consulta);
-
-
 
                 int altura_maxima = 0;
                 //Se obtiene la altura máxima alcanzada
@@ -300,14 +282,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se pone la velocidad maxima en el registro
                 nuevoVuelo.put(FlightContract.Column.VELOCIDAD_MAXIMA, velocidad_maxima);
 
-             Uri uri = getContentResolver().insert(FlightContract.CONTENT_URI, nuevoVuelo);
-
-/*
-                //Se inserta en la base de datos
-                db.insert(FlightContract.TABLE, null, nuevoVuelo);
-                //Se cierra la base de datos
-                db.close();
-*/
+                //Se introducen los datos en la base de datos
+                Uri uri = getContentResolver().insert(FlightContract.CONTENT_URI, nuevoVuelo);
 
                 //Establecemos el LatLngBounds para la camara
                 LatLngBounds bounds = builder.build();
@@ -318,6 +294,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se la asignamos al mapa
                 mMap.moveCamera(cu);
 
+                //Esto se ha hecho para modificar la ventana que aparece si haces click en un marcador del mapa
+                //Se modifican los parametros title y snippet (que es la información que aparece debajo del titulo al hacer click)
+                //Con esto se pueden insertar, por ejemplo, saltos de linea
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                     @Override
