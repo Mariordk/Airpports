@@ -2,11 +2,13 @@ package com.example.mario.airpports;
 
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -36,6 +38,7 @@ import org.json.JSONArray;
 
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     Spinner numero_vuelo;
     Button tipoMapa;
+    Button botonAltitudes;
+    Button botonVelocidades;
 
     int[] message;
     String[] aircraft;
@@ -57,24 +62,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int[] speed;
     String[] time1 ;
     int[] source;
-    int size;
-    boolean result = true;
+
+    List<Integer> alturas;
+    List<Integer> velocidades;
+
+    int altura_maxima = 0;
+    int velocidad_maxima = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
+
         tipoMapa = (Button) findViewById(R.id.tipoMapa);
+        botonAltitudes = (Button) findViewById(R.id.grafica_altura);
+        botonVelocidades = (Button) findViewById(R.id.grafica_velocidad);
 
 
         Rest rest = new Rest();
         rest.execute(getIntent().getExtras().getString("numero_vuelo"));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         dbHelper = new DbHelper(this);
+
+
 
         tipoMapa.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +102,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
+
 
     }
 
@@ -177,8 +194,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             List<Marker> marcadores = new ArrayList<Marker>();
             //ArrayList para almacenar las alturas y velocidades del vuelo seleccionado para calcular las máximas y luego realizar
             //las gráficas pertinentes
-            List<Integer> alturas = new ArrayList<Integer>();
-            List<Integer> velocidades = new ArrayList<Integer>();
+
+            alturas = new ArrayList<Integer>();
+            velocidades = new ArrayList<Integer>();
             //Variable para almacenar las alturas del vuelo y recorrer el array
             int altura=0;
             //Si ha habido exito en la conexion al servicio rest
@@ -260,7 +278,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 long fecha_consulta = System.currentTimeMillis();
                 nuevoVuelo.put(FlightContract.Column.FECHA_CONSULTA, fecha_consulta);
 
-                int altura_maxima = 0;
+
                 //Se obtiene la altura máxima alcanzada
                 for (int j=0;j<alturas.size();j++){
                     if (alturas.get(j)>altura_maxima){
@@ -271,7 +289,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se pone la altura maxima en el registro
                 nuevoVuelo.put(FlightContract.Column.ALTURA_MAXIMA, altura_maxima);
 
-                int velocidad_maxima = 0;
                 //Se obtiene la velocidad máxima alcanzada
                 for (int j=0;j<velocidades.size();j++){
                     if (velocidades.get(j)>velocidad_maxima){
@@ -329,6 +346,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+    public void mostrarAltitudes(View v){
+
+        Intent intent = new Intent(this, PlotAltitudesActivity.class);
+
+
+        Bundle b = new Bundle();
+        b.putIntegerArrayList("alturas", (ArrayList<Integer>) alturas);
+        intent.putExtra("numero_vuelo", getIntent().getExtras().getString("numero_vuelo"));
+        intent.putExtra("fecha_vuelo", getIntent().getExtras().getString("fecha_vuelo"));
+
+        intent.putExtras(b);
+
+        startActivity(intent);
+
+
+    }
+
 
 }
 

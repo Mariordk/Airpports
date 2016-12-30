@@ -20,4 +20,7 @@
     <string name="confirm_delete">Are you sure you want to delete seen flights?</string>
     <string name="No">No</string>
     <string name="yes">Yes</string>
+    <string name="altitude_summary">"Altitude summary of flight "</string>
+    <string name="mean_altitude">"Mean altitude: "</string>
+    <string name="the_day">the day</string>
 </resources>

@@ -20,4 +20,7 @@
     <string name="confirm_delete">¿Estás seguro de que quieres eliminar los vuelos consultados?</string>
     <string name="yes">Sí</string>
     <string name="No">No</string>
+    <string name="altitude_summary">Resumen de la altitud del vuelo </string>
+    <string name="the_day">el día</string>
+    <string name="mean_altitude">"Altitud media: "</string>
 </resources>

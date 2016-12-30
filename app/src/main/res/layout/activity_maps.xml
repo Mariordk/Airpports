@@ -2,53 +2,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentRight="true">
-
-        <CheckBox android:id="@+id/adsbhub"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="ADSBHUB"
-            android:checked="true" />
-
-        <CheckBox android:id="@+id/frambuesa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="FRAMBUESA"
-            android:checked="true" />
-
-        <CheckBox android:id="@+id/flightradar24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="FLIGHTRADAR24"
-            android:checked="true" />
-
-        <CheckBox android:id="@+id/flightaware"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="FLIGHTAWARE"
-            android:checked="true" />
-
-    </LinearLayout>
-
 
     <Button android:id="@+id/tipoMapa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/mapType" />
 
+    <Button android:id="@+id/grafica_altura"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tipoMapa"
+        android:text="@string/altitude"
+        android:drawableRight="@drawable/mountain"
+        android:onClick="mostrarAltitudes"
+       />
 
-
+    <Button android:id="@+id/grafica_velocidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/grafica_altura"
+        android:text="@string/speed"
+        android:drawableRight="@drawable/races"
+        />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
