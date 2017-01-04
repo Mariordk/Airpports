@@ -28,4 +28,5 @@
     <string name="change_language">Cambiar idioma</string>
     <string name="spanish">Español</string>
     <string name="english">Inglés</string>
+    <string name="no_seen_routes">No hay rutas consultadas</string>
 </resources>
