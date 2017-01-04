@@ -23,6 +23,7 @@
         android:layout_below="@+id/grafica_altura"
         android:text="@string/speed"
         android:drawableRight="@drawable/races"
+        android:onClick="mostrarVelocidades"
         />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

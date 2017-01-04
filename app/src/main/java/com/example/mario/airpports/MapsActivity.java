@@ -364,6 +364,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void mostrarVelocidades(View v){
+
+        Intent intent = new Intent(this, PlotSpeedsActivity.class);
+
+
+        Bundle b = new Bundle();
+        b.putIntegerArrayList("velocidades", (ArrayList<Integer>) velocidades);
+        intent.putExtra("numero_vuelo", getIntent().getExtras().getString("numero_vuelo"));
+        intent.putExtra("fecha_vuelo", getIntent().getExtras().getString("fecha_vuelo"));
+
+        intent.putExtras(b);
+
+        startActivity(intent);
+
+
+    }
 
 }
 

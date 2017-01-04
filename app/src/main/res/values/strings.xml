@@ -23,4 +23,9 @@
     <string name="altitude_summary">Resumen de la altitud del vuelo </string>
     <string name="the_day">el día</string>
     <string name="mean_altitude">"Altitud media: "</string>
+    <string name="speed_summary">"Resumen de la velocidad del vuelo "</string>
+    <string name="mean_speed">"Velocidad media: "</string>
+    <string name="change_language">Cambiar idioma</string>
+    <string name="spanish">Español</string>
+    <string name="english">Inglés</string>
 </resources>

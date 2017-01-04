@@ -7,4 +7,10 @@
             android:icon="@android:drawable/ic_menu_delete"
             app:showAsAction="always|withText"
             android:title="delete" />
+
+        <item
+        android:id="@+id/language"
+        android:icon="@drawable/mundial"
+        app:showAsAction="always|withText"
+        android:title="languages" />
     </menu>

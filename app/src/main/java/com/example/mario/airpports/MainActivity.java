@@ -2,7 +2,10 @@ package com.example.mario.airpports;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +19,11 @@ import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
-
+    SharedPreferences prefs;
     private FragmentTabHost tabHost;
     private MenuItem delete;
     @Override
@@ -34,9 +39,11 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tabHost.newTabSpec(getString(R.string.see_route)).setIndicator(getString(R.string.see_route)), MainFragment.class, null);
         tabHost.addTab(tabHost.newTabSpec(getString(R.string.seen_routes)).setIndicator(getString(R.string.seen_routes)), FlightFragment.class, null);
 
-
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     }
+
+
 
     //Método para crear el menú
     @Override
@@ -119,11 +126,74 @@ public class MainActivity extends AppCompatActivity {
 
                 //Se muestra
                 alertDialog.show();
+                return true;
+
+            case R.id.language:
+
+                AlertDialog.Builder dialogLanguage = new AlertDialog.Builder(this);
+
+                final String[] items = {getString(R.string.spanish), getString(R.string.english)};
+                final SharedPreferences.Editor editor = prefs.edit();
+                //Se establece el titulo del alertdialog
+                dialogLanguage.setTitle(getString(R.string.change_language)).setItems(items, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+
+                        switch (item){
+                            case 0:
+                                editor.putString("idioma","spanish");
+                                editor.apply();
+                                System.out.println("SELECCIONADO ESPAÑOL");
+                                changeLocale();
+                                break;
+
+                            case 1:
+                                editor.putString("idioma","english");
+                                editor.apply();
+                                System.out.println("SELECCIONADO INGLES");
+                                changeLocale();
+                                break;
+                        }
+
+
+                    }
+                });
+
+
+
+                //Se crea el alertDialog
+                AlertDialog languageDialog = dialogLanguage.create();
+
+                //Se muestra
+                languageDialog.show();
 
                 return true;
 
             default:
                 return false;
+
         }
+
+
+    }
+
+    public void changeLocale(){
+        Configuration config = new Configuration(this.getResources().getConfiguration());
+        switch (prefs.getString("idioma",null)){
+
+            case "spanish":
+                config.locale = new Locale("es");
+                System.out.println("SPANISH");
+                break;
+            case "english":
+                config.locale = Locale.US;
+                System.out.println("ENGLISH");
+                break;
+
+        }
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
+        Intent refresh = new Intent(this, MainActivity.class);
+        startActivity(refresh);
+
     }
 }

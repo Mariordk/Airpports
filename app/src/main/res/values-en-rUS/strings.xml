@@ -23,4 +23,9 @@
     <string name="altitude_summary">"Altitude summary of flight "</string>
     <string name="mean_altitude">"Mean altitude: "</string>
     <string name="the_day">the day</string>
+    <string name="speed_summary">"Speed summary of flight "</string>
+    <string name="mean_speed">"Mean speed: "</string>
+    <string name="change_language">Change language</string>
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
 </resources>

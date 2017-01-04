@@ -51,6 +51,10 @@
             android:name=".PlotAltitudesActivity"
             android:label="@string/altitude_summary"></activity>
 
+        <activity
+            android:name=".PlotSpeedsActivity"
+            android:label="@string/speed_summary"></activity>
+
         <provider
             android:name="com.example.mario.airpports.FlightProvider"
             android:authorities="com.example.mario.airpports.FlightProvider"
