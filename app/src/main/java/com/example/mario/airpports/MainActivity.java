@@ -190,8 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
         }
+
+        //Con esto se actualiza la configuración de la app para cambiar el idioma
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
+        //Se crea un intent que se llama a sí mismo, para actualizar el activity actual.
         Intent refresh = new Intent(this, MainActivity.class);
         startActivity(refresh);
 

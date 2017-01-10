@@ -29,4 +29,6 @@
     <string name="spanish">Español</string>
     <string name="english">Inglés</string>
     <string name="no_seen_routes">No hay rutas consultadas</string>
+    <string name="obtaining_flights">Obteniendo ruta...</string>
+    <string name="drawing_route">Dibujando ruta...</string>
 </resources>

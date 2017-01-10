@@ -115,7 +115,6 @@ public class MainFragment extends Fragment implements View.OnClickListener, Text
         //Array en el que se introducen todos los vuelos disponibles
         String[] vuelos;
 
-
         @Override
         protected Boolean doInBackground(String... strUrl) {
             boolean result = true;

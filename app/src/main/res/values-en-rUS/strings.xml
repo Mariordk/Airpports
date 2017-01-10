@@ -29,4 +29,6 @@
     <string name="spanish">Spanish</string>
     <string name="english">English</string>
     <string name="no_seen_routes">There is no seen routes</string>
+    <string name="obtaining_flights">Getting points</string>
+    <string name="drawing_route">Drawing route...</string>
 </resources>

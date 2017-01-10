@@ -1,6 +1,7 @@
 package com.example.mario.airpports;
 
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -73,24 +75,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
 
+        //Se obtienen los diferentes elementos de la interfaz de usuario para manejar los eventos
+        numero_vuelo = (Spinner) findViewById(R.id.numero_vuelo);
         tipoMapa = (Button) findViewById(R.id.tipoMapa);
         botonAltitudes = (Button) findViewById(R.id.grafica_altura);
         botonVelocidades = (Button) findViewById(R.id.grafica_velocidad);
 
-
+        //Se inicializa la llamada al rest para obtener los mensajes del vuelo seleccionado
         Rest rest = new Rest();
+        //Se ejecuta la llamada pasando por parámetro el vuelo seleccionado en el activity anterior
         rest.execute(getIntent().getExtras().getString("numero_vuelo"));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
         dbHelper = new DbHelper(this);
 
-
-
+        //Listener para cambiar el tipo de mapa (estilo)
         tipoMapa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
         });
+
 
 
 
@@ -119,10 +122,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
 
     public class Rest extends AsyncTask<String, Integer, Boolean>{
+
+        private ProgressDialog progreso;
+
+        //Aqui se inicializa la barra de progreso en la que se indica el porcentaje para ver cuanto de cargado está la ruta a dibujar
+        @Override protected void onPreExecute() {
+
+            progreso = new ProgressDialog(MapsActivity.this);
+            progreso.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progreso.setMessage(getString(R.string.obtaining_flights));
+            progreso.setCancelable(false);
+            progreso.setProgress(0);
+            progreso.show();
+
+        }
 
         @Override
         protected Boolean doInBackground(String... params) {
@@ -151,6 +169,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Se meten los datos en un Array de tipo json
                 JSONArray respJSON = new JSONArray(respStr);
 
+                progreso.setMax(respJSON.length());
+
                 //Inicializamos las variables con el tamaño del array anterior
                 message = new int[respJSON.length()];
                 aircraft = new String[respJSON.length()];
@@ -176,6 +196,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     time1[i] = obj.getString("time1");
 
 
+                    publishProgress(i);
+
                 }
 
             } catch (Exception e){
@@ -185,8 +207,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             return result;
         }
+
+        @Override protected void onProgressUpdate(Integer... porc) {
+
+            progreso.setProgress(porc[0]);
+
+        }
+
         @Override
         protected void onPostExecute(Boolean result) {
+
+            progreso.dismiss();
 
             //Con esto se establecen los bounds de los marcadores
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -257,6 +288,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         //Se incluyen los puntos de latitud y longitud para establecer los limites para mover la camara
                         builder.include(punto);
 
+                        //Aqui se añaden a los arrays de altura y velocidad la velocidad de cada punto pintado
+                        //Con esto luego se podrán ver las gráficas con las velocidades y las alturas
+                        //Así como para almacenar la velocidad y altitud máxima
                         alturas.add(altitude[i]);
                         velocidades.add(speed[i]);
                         altura++;
@@ -347,30 +381,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+
+    //Este metodo se inicializa al hacer click en el botón de las altitudes, inicia el activity de las altitudes con la gráfica
     public void mostrarAltitudes(View v){
 
         Intent intent = new Intent(this, PlotAltitudesActivity.class);
 
-
         Bundle b = new Bundle();
+        //Se le pasa al siguiente activity el array con las alturas
         b.putIntegerArrayList("alturas", (ArrayList<Integer>) alturas);
+        //Se le pasa al siguiente activity el vuelo y la fecha del vuelo seleccionada
         intent.putExtra("numero_vuelo", getIntent().getExtras().getString("numero_vuelo"));
         intent.putExtra("fecha_vuelo", getIntent().getExtras().getString("fecha_vuelo"));
-
         intent.putExtras(b);
-
         startActivity(intent);
 
 
     }
 
+    //Este metodo se inicializa al hacer click en el botón de las velocidades, inicia el activity de las velocidades con la gráfica
     public void mostrarVelocidades(View v){
 
         Intent intent = new Intent(this, PlotSpeedsActivity.class);
 
 
         Bundle b = new Bundle();
+        //Se le pasa al siguiente activity el array con las alturas
         b.putIntegerArrayList("velocidades", (ArrayList<Integer>) velocidades);
+        //Se le pasa al siguiente activity el vuelo y la fecha del vuelo seleccionada
         intent.putExtra("numero_vuelo", getIntent().getExtras().getString("numero_vuelo"));
         intent.putExtra("fecha_vuelo", getIntent().getExtras().getString("fecha_vuelo"));
 
