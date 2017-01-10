@@ -32,13 +32,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Se inicializa el tabhost donde se incluirán los tabs
-        tabHost= (FragmentTabHost) findViewById(android.R.id.tabhost);
+        tabHost = (FragmentTabHost) findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(),android.R.id.tabcontent);
 
         //Se añaden los tabs, cada uno con su fragment
         tabHost.addTab(tabHost.newTabSpec(getString(R.string.see_route)).setIndicator(getString(R.string.see_route)), MainFragment.class, null);
         tabHost.addTab(tabHost.newTabSpec(getString(R.string.seen_routes)).setIndicator(getString(R.string.seen_routes)), FlightFragment.class, null);
 
+        //Se inicializan las preferencias compartidas
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     }
@@ -48,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     //Método para crear el menú
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-
 
 
         //Se infla el menú en el activity
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Al seleccionar un item del menú
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+        public boolean onOptionsItemSelected(MenuItem item) {
         //Se obtiene el item del menu seleccionado
         switch (item.getItemId()) {
             //Si el item es el de borrar los vuelos consultados, cuyo id es delete
@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder dialogLanguage = new AlertDialog.Builder(this);
 
                 final String[] items = {getString(R.string.spanish), getString(R.string.english)};
+                //Para modificar las preferencias compartidas
                 final SharedPreferences.Editor editor = prefs.edit();
                 //Se establece el titulo del alertdialog
                 dialogLanguage.setTitle(getString(R.string.change_language)).setItems(items, new DialogInterface.OnClickListener() {
@@ -142,14 +143,12 @@ public class MainActivity extends AppCompatActivity {
                             case 0:
                                 editor.putString("idioma","spanish");
                                 editor.apply();
-                                System.out.println("SELECCIONADO ESPAÑOL");
                                 changeLocale();
                                 break;
 
                             case 1:
                                 editor.putString("idioma","english");
                                 editor.apply();
-                                System.out.println("SELECCIONADO INGLES");
                                 changeLocale();
                                 break;
                         }
@@ -182,11 +181,9 @@ public class MainActivity extends AppCompatActivity {
 
             case "spanish":
                 config.locale = new Locale("es");
-                System.out.println("SPANISH");
                 break;
             case "english":
                 config.locale = Locale.US;
-                System.out.println("ENGLISH");
                 break;
 
         }

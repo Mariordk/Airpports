@@ -55,6 +55,7 @@ public class FlightFragment extends ListFragment implements LoaderManager.Loader
         Log.d(TAG, "onLoadFinished with cursor: " + cursor.getCount());
         mAdapter.swapCursor(cursor);
     }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
